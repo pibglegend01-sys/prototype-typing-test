@@ -1,12 +1,7 @@
-/*
+const supabaseUrl = 'https://qvtetshqaduhkolyogay.supabase.co';
+const supabaseAnonKey = 'sb_publishable_k-76HV2z9s2290hRI_H-Hg_OI-0vz8-';
+const supabase = window.supabase.createClient(supabaseUrl, supabaseAnonKey);
 
-import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
-
-const supabaseUrl = 'https://qvtetshqaduhkolyogay.supabase.co'
-const supabaseAnonKey = 'sb_publishable_k-76HV2z9s2290hRI_H-Hg_OI-0vz8-'
-
-const supabase = createClient(supabaseUrl, supabaseAnonKey)
-*/
 const PARAGRAPHS = {
     english: {
         beginner: [
@@ -27,7 +22,7 @@ const PARAGRAPHS = {
             "In physics, E=mc^2 states that energy & mass are interchangeable! Is it 100% accurate? Yes.",
             "The const function() { let x = 42; return x * 3.14159; } requires precise keystrokes.",
             "\"To be, or not to be, that is the question:\" - Hamlet, Act III, Scene 1.",
-            "HTTP/1.1 200 OK \r\n Content-Type: application/json \r\n { \"status\": \"success\", \"code\": 200 }",
+            "HTTP/1.1 200 OK \\r\\n Content-Type: application/json \\r\\n { \"status\": \"success\", \"code\": 200 }",
             "Pneumonoultramicroscopicsilicovolcanoconiosis is the longest word in the English dictionary (45 letters)."
         ]
     },
@@ -123,8 +118,23 @@ const submitLoginBtn = document.getElementById('submit-login-btn');
 const toggleLoginModeBtn = document.getElementById('toggle-login-mode');
 const logoutBtn = document.getElementById('logout-btn');
 
-let currentUser = localStorage.getItem('typingUser') || null;
-let isLoginMode = true;
+let currentUser = null;
+let currentUserId = null;
+
+// Listen to Supabase Auth state changes
+supabase.auth.onAuthStateChange((event, session) => {
+    if (session) {
+        currentUser = session.user.user_metadata.username || session.user.email;
+        currentUserId = session.user.id;
+        document.getElementById('login-btn').classList.add('hidden');
+        logoutBtn.classList.remove('hidden');
+    } else {
+        currentUser = null;
+        currentUserId = null;
+        document.getElementById('login-btn').classList.remove('hidden');
+        logoutBtn.classList.add('hidden');
+    }
+});
 
 const resultScreen = document.getElementById('result-screen');
 const finalWpmEl = document.getElementById('final-wpm');
@@ -167,7 +177,6 @@ function initTest() {
     resultScreen.classList.add('hidden');
     historyScreen.classList.add('hidden');
     leaderboardScreen.classList.add('hidden');
-    loginScreen.classList.add('hidden');
     
     if (selectedTime === 0) {
         doneBtn.classList.remove('hidden');
@@ -465,15 +474,17 @@ function endTest() {
     localStorage.setItem('typingHistory', JSON.stringify(history));
 
     if (currentUser && netWpm > 0) {
-        fetch('/api/score', {
-            method: 'POST',
-            body: JSON.stringify({
+        supabase.from('leaderboard').insert([
+            {
+                user_id: currentUserId,
                 username: currentUser,
                 wpm: netWpm,
-                acc: acc,
-                mode: `${selectedLanguage.charAt(0).toUpperCase() + selectedLanguage.slice(1)} | ${selectedTime === 0 ? 'No Limit' : `${selectedTime / 60}m`} | ${selectedDifficulty.charAt(0).toUpperCase() + selectedDifficulty.slice(1)}`
-            })
-        }).catch(e => console.error(e));
+                accuracy: acc,
+                duration: selectedTime
+            }
+        ]).then(({ error }) => {
+            if (error) console.error('Error saving score:', error);
+        });
     }
 
     // Update UI
@@ -528,8 +539,14 @@ async function openLeaderboard() {
     leaderboardScreen.classList.remove('hidden');
     
     try {
-        const res = await fetch('/api/leaderboard');
-        const data = await res.json();
+        const { data, error } = await supabase
+            .from('leaderboard')
+            .select('username, wpm, accuracy')
+            .order('wpm', { ascending: false })
+            .limit(10);
+            
+        if (error) throw error;
+        
         leaderboardList.innerHTML = '';
         if(data.length === 0) {
             leaderboardList.innerHTML = '<p style="text-align:center; color: var(--text-secondary);">No scores yet.</p>';
@@ -546,7 +563,7 @@ async function openLeaderboard() {
                             <span class="stat-label">WPM</span>
                         </div>
                         <div class="stat">
-                            <span class="stat-val">${item.acc}%</span>
+                            <span class="stat-val">${item.accuracy}%</span>
                             <span class="stat-label">ACC</span>
                         </div>
                     </div>
@@ -555,38 +572,9 @@ async function openLeaderboard() {
             });
         }
     } catch (e) {
+        console.error(e);
         leaderboardList.innerHTML = '<p style="text-align:center; color: var(--incorrect-color);">Error loading leaderboard.</p>';
     }
-}
-
-function updateLoginUI() {
-    if (currentUser) {
-        document.getElementById('logged-in-user-display').style.display = 'block';
-        document.querySelector('#logged-in-user-display span').innerText = currentUser;
-        logoutBtn.classList.remove('hidden');
-        submitLoginBtn.classList.add('hidden');
-        document.getElementById('login-username-container').style.display = 'none';
-        document.getElementById('login-password-container').style.display = 'none';
-        document.getElementById('login-toggle-container').style.display = 'none';
-        document.getElementById('login-title').innerText = 'Profile';
-    } else {
-        document.getElementById('logged-in-user-display').style.display = 'none';
-        logoutBtn.classList.add('hidden');
-        submitLoginBtn.classList.remove('hidden');
-        document.getElementById('login-username-container').style.display = 'block';
-        document.getElementById('login-password-container').style.display = 'block';
-        document.getElementById('login-toggle-container').style.display = 'block';
-        document.getElementById('login-title').innerText = isLoginMode ? 'Login' : 'Sign Up';
-        document.getElementById('login-toggle-text').innerText = isLoginMode ? "Don't have an account? " : "Already have an account? ";
-        toggleLoginModeBtn.innerText = isLoginMode ? "Sign Up" : "Login";
-    }
-}
-
-function openLogin() {
-    state.isPlaying = false;
-    clearInterval(state.timer);
-    updateLoginUI();
-    loginScreen.classList.remove('hidden');
 }
 
 // Event Listeners
@@ -611,66 +599,15 @@ closeLeaderboardBtn.addEventListener('click', () => {
     initTest();
 });
 
-loginBtn.addEventListener('click', openLogin);
-closeLoginBtn.addEventListener('click', () => {
-    loginScreen.classList.add('hidden');
-    initTest();
-});
-
-toggleLoginModeBtn.addEventListener('click', (e) => {
-    e.preventDefault();
-    isLoginMode = !isLoginMode;
-    updateLoginUI();
-});
-
-submitLoginBtn.addEventListener('click', async () => {
-    const user = document.getElementById('login-username').value;
-    const pass = document.getElementById('login-password').value;
-    const errorEl = document.getElementById('login-error');
-    errorEl.innerText = '';
-    
-    if(!user || !pass) {
-        errorEl.innerText = 'Please fill out all fields.';
-        return;
-    }
-    
-    submitLoginBtn.disabled = true;
-    try {
-        const res = await fetch(isLoginMode ? '/api/login' : '/api/signup', {
-            method: 'POST',
-            body: JSON.stringify({username: user, password: pass})
-        });
-        const data = await res.json();
-        
-        if (data.success) {
-            currentUser = data.username;
-            localStorage.setItem('typingUser', currentUser);
-            updateLoginUI();
-            setTimeout(() => {
-                loginScreen.classList.add('hidden');
-                initTest();
-            }, 1000);
-        } else {
-            errorEl.innerText = data.message || 'Error occurred.';
-        }
-    } catch(e) {
-        errorEl.innerText = 'Network error.';
-    }
-    submitLoginBtn.disabled = false;
-});
-
-logoutBtn.addEventListener('click', () => {
-    currentUser = null;
-    localStorage.removeItem('typingUser');
-    document.getElementById('login-username').value = '';
-    document.getElementById('login-password').value = '';
-    updateLoginUI();
+logoutBtn.addEventListener('click', async () => {
+    await supabase.auth.signOut();
+    // onAuthStateChange will handle hiding the button
 });
 
 function enforceFocus(e) {
-    if(!state.isFinished && resultScreen.classList.contains('hidden') && historyScreen.classList.contains('hidden') && leaderboardScreen.classList.contains('hidden') && loginScreen.classList.contains('hidden')) {
+    if(!state.isFinished && resultScreen.classList.contains('hidden') && historyScreen.classList.contains('hidden') && leaderboardScreen.classList.contains('hidden')) {
         // Prevent focusing if we are clicking a button or dropdown
-        if (!e.target.closest('button') && !e.target.closest('select') && !e.target.closest('option')) {
+        if (!e.target.closest('button') && !e.target.closest('select') && !e.target.closest('option') && !e.target.closest('a')) {
             focusInput();
         }
     }

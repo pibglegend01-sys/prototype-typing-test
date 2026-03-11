@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Typing Master - Login</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Outfit:wght@400;600;800&family=Pacifico&display=swap" rel="stylesheet">
+    <style>
+        .login-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            width: 100%;
+        }
+        .login-card {
+            background-color: var(--bg-card);
+            padding: 3rem;
+            border-radius: 24px;
+            width: 100%;
+            max-width: 450px;
+            text-align: center;
+            border: 1px solid rgba(255,255,255,0.7);
+            backdrop-filter: blur(28px) saturate(120%);
+            -webkit-backdrop-filter: blur(28px) saturate(120%);
+            box-shadow: inset 0 2px 8px rgba(255, 255, 255, 0.8), 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+        .login-card h2 {
+            font-size: 2rem;
+            margin-bottom: 2rem;
+            color: var(--text-primary);
+        }
+        .input-group {
+            margin-bottom: 1.5rem;
+            text-align: left;
+        }
+        .input-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--text-secondary);
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        .error-message {
+            color: var(--incorrect-color);
+            font-size: 0.85rem;
+            min-height: 1.2rem;
+            margin-bottom: 1rem;
+            text-align: left;
+        }
+        .toggle-link {
+            margin-top: 1.5rem;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+        .toggle-link a {
+            color: var(--accent-color);
+            font-weight: bold;
+            text-decoration: none;
+            transition: opacity 0.2s;
+        }
+        .toggle-link a:hover {
+            opacity: 0.8;
+        }
+        .back-link {
+            display: inline-block;
+            margin-top: 2rem;
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.2s;
+        }
+        .back-link:hover {
+            color: var(--text-primary);
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-card">
+            <h2 id="login-title">Welcome Back</h2>
+            <form id="auth-form" onsubmit="return false;">
+                <div class="input-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" class="glass-input" placeholder="Enter your email" required autofocus>
+                </div>
+                <div class="input-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" class="glass-input" placeholder="Enter your password" required minlength="6">
+                </div>
+                <div class="input-group hidden" id="username-group">
+                    <label for="username">Display Name</label>
+                    <input type="text" id="username" class="glass-input" placeholder="Choose a display name">
+                </div>
+                
+                <p id="error-message" class="error-message"></p>
+                
+                <button type="submit" id="submit-btn" class="primary-btn" style="width: 100%;">Sign In</button>
+            </form>
+            
+            <p class="toggle-link">
+                <span id="toggle-text">Don't have an account? </span>
+                <a href="#" id="toggle-btn">Sign Up</a>
+            </p>
+            
+            <a href="index.html" class="back-link">← Back to Typing Test</a>
+        </div>
+    </div>
+
+    <!-- Supabase JS Client -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="login.js"></script>
+</body>
+</html>

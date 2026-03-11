@@ -54,8 +54,11 @@
                     <button id="leaderboard-btn" class="icon-btn" aria-label="Leaderboard">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
                     </button>
-                    <button id="login-btn" class="icon-btn" aria-label="Login">
+                    <a href="login.html" id="login-btn" class="icon-btn" aria-label="Login / Profile">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                    </a>
+                    <button id="logout-btn" class="icon-btn hidden" aria-label="Logout" style="color: var(--incorrect-color);">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
                     </button>
                     <button id="history-btn" class="icon-btn" aria-label="History">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8v4l3 3m6-3a9 9 0 1 1-18 0 9 9 0 0 1 18 0z"/></svg>
@@ -125,36 +128,12 @@
                 <button id="close-leaderboard-btn" class="primary-btn mt-4">Close Menu</button>
             </div>
         </div>
-
-        <div id="login-screen" class="hidden">
-            <div class="result-card history-card" style="max-width: 400px;">
-                <h2 id="login-title">Login</h2>
-                <div style="display: flex; flex-direction: column; gap: 1rem; text-align: left;">
-                    <div id="login-username-container">
-                        <label style="color: var(--text-secondary); font-size: 0.9rem; font-weight: bold;">Username</label>
-                        <input type="text" id="login-username" class="glass-input" placeholder="Enter username">
-                    </div>
-                    <div id="login-password-container">
-                        <label style="color: var(--text-secondary); font-size: 0.9rem; font-weight: bold;">Password</label>
-                        <input type="password" id="login-password" class="glass-input" placeholder="Enter password">
-                    </div>
-                    <p id="login-error" style="color: var(--incorrect-color); font-size: 0.85rem; min-height: 1.2rem; margin:0;"></p>
-                    <button id="submit-login-btn" class="primary-btn">Login</button>
-                </div>
-                <p id="login-toggle-container" style="margin-top: 1.5rem; color: var(--text-secondary); font-size: 0.9rem;">
-                    <span id="login-toggle-text">Don't have an account? </span>
-                    <a href="#" id="toggle-login-mode" style="color: var(--accent-color); font-weight: bold;">Sign Up</a>
-                </p>
-                <div style="margin-top: 1rem;">
-                    <span id="logged-in-user-display" style="color: var(--correct-color); font-weight: bold; display:none; text-align: center;">Logged in as: <span></span></span>
-                    <button id="logout-btn" class="primary-btn mt-4 hidden" style="width:100%; background: var(--incorrect-color);">Logout</button>
-                </div>
-                <button id="close-login-btn" class="primary-btn mt-4" style="background: rgba(255,255,255,0.2); color: var(--text-primary); width:100%;">Close</button>
-            </div>
-        </div>
     </div>
     
     <input type="text" id="hidden-input" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" autofocus>
+    
+    <!-- Supabase JS Client -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script type="module" src="script.js"></script>
 </body>
 </html>
