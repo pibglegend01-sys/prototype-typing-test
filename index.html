@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Typing Master</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Outfit:wght@400;600;800&family=Pacifico&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">Typing<span>Master</span></div>
+            <div class="header-top">
+                <div class="mode-selector">
+                    <select id="language-select" class="glass-select">
+                        <option value="english">English</option>
+                        <option value="hindi">Hindi</option>
+                        <option value="chinese">Chinese</option>
+                        <option value="japanese">Japanese</option>
+                        <option value="arabic">Arabic</option>
+                        <option value="german">German</option>
+                        <option value="french">French</option>
+                        <option value="korean">Korean</option>
+                    </select>
+                    <div class="nav-divider"></div>
+                    <button class="mode-btn diff-btn" data-diff="beginner">Beginner</button>
+                    <button class="mode-btn diff-btn active" data-diff="intermediate">Inter</button>
+                    <button class="mode-btn diff-btn" data-diff="advanced">Advance</button>
+                    <div class="nav-divider"></div>
+                    <button class="mode-btn time-btn active" data-time="0">No Limit</button>
+                    <button class="mode-btn time-btn" data-time="300">5m</button>
+                    <button class="mode-btn time-btn" data-time="600">10m</button>
+                    <button class="mode-btn time-btn" data-time="900">15m</button>
+                </div>
+            </div>
+            
+            <div class="header-bottom">
+                <div class="dashboard">
+                    <div class="stat-box">
+                        <span class="label">Time</span>
+                        <span class="value" id="time">&infin;</span>
+                    </div>
+                    <div class="stat-box">
+                        <span class="label">WPM</span>
+                        <span class="value" id="live-wpm">0</span>
+                    </div>
+                    <div class="stat-box">
+                        <span class="label">Accuracy</span>
+                        <span class="value" id="live-acc">100%</span>
+                    </div>
+                </div>
+                <div class="action-buttons">
+                    <button id="leaderboard-btn" class="icon-btn" aria-label="Leaderboard">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+                    </button>
+                    <button id="login-btn" class="icon-btn" aria-label="Login">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                    </button>
+                    <button id="history-btn" class="icon-btn" aria-label="History">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8v4l3 3m6-3a9 9 0 1 1-18 0 9 9 0 0 1 18 0z"/></svg>
+                    </button>
+                    <button id="done-btn" class="done-btn hidden">Done</button>
+                    <button id="restart-btn" class="icon-btn" aria-label="Restart">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.59-9.21l5.67-5.67"/></svg>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <main>
+            <div class="typing-container">
+                <div class="typing-window">
+                    <div class="typing-area" id="typing-area">
+                        <div id="cursor"></div>
+                        <!-- Words will be injected here -->
+                    </div>
+                </div>
+            </div>
+            <div class="instruction">Start typing to begin the test...</div>
+        </main>
+
+        <div id="result-screen" class="hidden">
+            <div class="result-card">
+                <h2>Test Complete</h2>
+                <div class="results-grid">
+                    <div class="result-item highlight">
+                        <span class="label">Net WPM</span>
+                        <span class="value" id="final-wpm">0</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="label">Accuracy</span>
+                        <span class="value" id="final-acc">0%</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="label">Gross WPM</span>
+                        <span class="value" id="gross-wpm">0</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="label">Keystrokes</span>
+                        <span class="value"><span class="correct-text" id="final-correct-keys">0</span> | <span class="incorrect-text" id="final-incorrect-keys">0</span></span>
+                    </div>
+                </div>
+                <button id="try-again-btn" class="primary-btn">Try Again</button>
+            </div>
+        </div>
+        </div>
+
+        <div id="history-screen" class="hidden">
+            <div class="result-card history-card">
+                <h2>Past Results</h2>
+                <div class="history-list" id="history-list">
+                    <!-- History items injected here -->
+                </div>
+                <button id="close-history-btn" class="primary-btn mt-4">Close Menu</button>
+            </div>
+        </div>
+
+        <div id="leaderboard-screen" class="hidden">
+            <div class="result-card history-card" style="max-width: 700px;">
+                <h2>Leaderboard</h2>
+                <div class="history-list" id="leaderboard-list">
+                    <!-- Leaderboard items injected here -->
+                </div>
+                <button id="close-leaderboard-btn" class="primary-btn mt-4">Close Menu</button>
+            </div>
+        </div>
+
+        <div id="login-screen" class="hidden">
+            <div class="result-card history-card" style="max-width: 400px;">
+                <h2 id="login-title">Login</h2>
+                <div style="display: flex; flex-direction: column; gap: 1rem; text-align: left;">
+                    <div id="login-username-container">
+                        <label style="color: var(--text-secondary); font-size: 0.9rem; font-weight: bold;">Username</label>
+                        <input type="text" id="login-username" class="glass-input" placeholder="Enter username">
+                    </div>
+                    <div id="login-password-container">
+                        <label style="color: var(--text-secondary); font-size: 0.9rem; font-weight: bold;">Password</label>
+                        <input type="password" id="login-password" class="glass-input" placeholder="Enter password">
+                    </div>
+                    <p id="login-error" style="color: var(--incorrect-color); font-size: 0.85rem; min-height: 1.2rem; margin:0;"></p>
+                    <button id="submit-login-btn" class="primary-btn">Login</button>
+                </div>
+                <p id="login-toggle-container" style="margin-top: 1.5rem; color: var(--text-secondary); font-size: 0.9rem;">
+                    <span id="login-toggle-text">Don't have an account? </span>
+                    <a href="#" id="toggle-login-mode" style="color: var(--accent-color); font-weight: bold;">Sign Up</a>
+                </p>
+                <div style="margin-top: 1rem;">
+                    <span id="logged-in-user-display" style="color: var(--correct-color); font-weight: bold; display:none; text-align: center;">Logged in as: <span></span></span>
+                    <button id="logout-btn" class="primary-btn mt-4 hidden" style="width:100%; background: var(--incorrect-color);">Logout</button>
+                </div>
+                <button id="close-login-btn" class="primary-btn mt-4" style="background: rgba(255,255,255,0.2); color: var(--text-primary); width:100%;">Close</button>
+            </div>
+        </div>
+    </div>
+    
+    <input type="text" id="hidden-input" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" autofocus>
+    <script type="module" src="script.js"></script>
+</body>
+</html>
